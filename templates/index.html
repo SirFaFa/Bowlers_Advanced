@@ -5,10 +5,10 @@
     <h1>Pista {{data.id+1}}</h1>
     <img class="imgIcono" src="/static/img/bowl.png"/>
 </div>
-<table style="width:100%">
+<table style="width:85%" class="scorecard">
 
     <tr>
-      <th> </th>
+      <th class="jugador"> </th>
       {% for valor in range(0,10) %}
         <th>
             {{valor+1}}
@@ -19,13 +19,13 @@
 
     {% for i in range(0,data.jugadores|length) %}
     <tr>
-      <td>{{data.jugadores[i]}}</td>
+      <td class="jugador">{{data.jugadores[i]}}</td>
       {% for j in range(0,10) %}
         <td>
-            {% if data.puntuacion[i][j][0]!='.' %}
+            {% if data.puntuacion[i][j][0]!=-1 %}
             <div class="div1">
                 {{data.puntuacion[i][j][0]}}
-                {% if data.puntuacion[i][j][1]!='.' %}
+                {% if data.puntuacion[i][j][1]!=-1 %}
                 {% if data.puntuacion[i][j][1]!='/' and data.puntuacion[i][j][0]!='X' and data.puntuacion[i][j][1]!=' ' %}
                 <div style="display:inline;">
                     {{data.puntuacion[i][j][1]-data.puntuacion[i][j][0]}}
@@ -44,35 +44,39 @@
             {% endif %}
 
 
-            {%if data.puntuacion[i][j][1]=='.' %}
+            {%if data.puntuacion[i][j][1]==-1 %}
             <div class="divInv2">
-                .
+                -1
             </div>
             {% else %}
             <div class="div2">
+                {%if data.calculaArraySuma(j,i)==-1 %}
+                -
+                {% else %}
                 {{data.calculaArraySuma(j,i)}}
+                {% endif %}
             </div>
             {% endif %}
         </td>
       {% endfor %}
         <td>
-            {% if data.extra[i][0]!='.' %}
+            {% if data.extra[i][0]!=-1 %}
             <div class="div3">
                 {{data.extra[i][0]}}
-                {% if data.extra[i][1]!='.' %}
+                {% if data.extra[i][1]!=-1 %}
                 <div style="display:inline;">
                     {{data.extra[i][1]}}
                 </div>
                 {% endif %}
             </div>
             {% endif %}
-            {% if data.puntuacion[i][9][1]!='.' %}
+            {% if data.puntuacion[i][9][1]!=-1 %}
             <div class="div2">
                    {{data.calculaArraySuma(9,i)}}
             </div>
             {% else %}
             <div class="divInv2">
-                  .
+                -1
             </div>
             {% endif %}
         </td>
@@ -81,13 +85,14 @@
 
 </table>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8" src="../static/js/script-io.js"></script>
 <script type="text/javascript" charset="utf-8">
     const socket = io();
     socket.on('nueva-tirada', (dataBirla, pista) => {
         if (pista == {{data.id}}) {
             if (!{{data.finalizada}}) {
             window.location.href =`{{url_for('home')}}transicion/{{data.id}}/[${dataBirla}]`;
+            console.log(dataBirla);
             }
         }
     });
@@ -99,6 +104,7 @@
             puntuacion:{{data.puntuacion|tojson}}
         });
     }
+
 </script>
 
 {% else %}

@@ -4,28 +4,58 @@
     var suma = 0;
 </script>
 <div class="contenedor">
-    {% for i in range(0,4) %}
+    {% set array = data|list %}
+    {% for i in range(4) %}
         <div class="filabol{{i|string}}">
-        {% for j in range(0,(4-i)) %}
-            {% if j == 0 and i!=0 %}
-            <script>suma += 1;</script>
-            <img class="bolo bolo{{(4-i)|string}}" src="/static/img/birla.png"/>
+        {% for j in range((4-i)) %}
+            {% set index = (5-(i+1))*((5-(i+1))-1)/2+(5-(j+1))-1-i %}
+            {% if data[index|int]==0 %}
+                {% if j == 0 and i!=0 %}
+                <script>console.log({{i}});</script>
+                <script>console.log({{index|int}});</script>
+                <img class="bolo bolo{{(4-i)|string}}" src="/static/img/birlaON.png"/>
+                {% else %}
+                <script>console.log({{index|int}});</script>
+                <img class="bolo" src="/static/img/birlaON.png"/>
+                {% endif %}
             {% else %}
-            <script>suma += 1;</script>
-            <img class="bolo" src="/static/img/birla.png"/>
+                {% if j == 0 and i!=0 %}
+                <script>console.log({{index|int}});</script>
+                <img class="bolo bolo{{(4-i)|string}}" src="/static/img/birlaOFF.png"/>
+                {% else %}
+                <script>console.log({{index|int}});</script>
+                <img class="bolo" src="/static/img/birlaOFF.png"/>
+                {% endif %}
             {% endif %}
-            {% endfor %}
+        {% endfor %}
         </div>
     {% endfor %}
 </div>
 
 <div>
-    <img class="img1" src="/static/img/jajas-.png" alt=""/>
+    <img class="img1" src="/static/img/zelda.gif" alt=""/>
     <img class="img2" src="/static/img/jajas2-.png" alt=""/>
 </div>
 <script>
     console.log({{data}});
-    console.log(suma);
+
+    console.log(4*(4-1)/2+4-1);
+    console.log(4*(4-1)/2+3-1);
+    console.log(4*(4-1)/2+2-1);
+    console.log(4*(4-1)/2+1-1);
+
+    console.log(3*(3-1)/2+3-1);
+    console.log(3*(3-1)/2+2-1);
+    console.log(3*(3-1)/2+1-1);
+
+    console.log({{2*(2-1)/2+2-1}});
+    console.log(2*(2-1)/2+1-1);
+
+    console.log(1*(1-1)/2+1-1);
+    var index = 1*(1-1)/2+1-1;
+
+    console.log(index);
+
     setTimeout(function(){
         window.location.href = "{{redirect_url}}";
     }, 5000);

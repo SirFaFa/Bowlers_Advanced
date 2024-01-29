@@ -3,10 +3,19 @@ table, th, td {
   border-radius: 0px;
   text-align:center;
 }
+
+td{
+  height:60px;
+}
+
 table{
-  position: absolute;
+  margin:auto;
+  text-align:center;
+  position: relative;
   border: 1px solid black;
   background-color:black;
+  width: 80%;
+  table-layout: fixed;
 }
 td, th{
   width:8%;
@@ -16,18 +25,21 @@ td, th{
 
 th{
   background-color:#355764;
+  font-size:20px;
 }
 .div1{
+
   margin-left:50%;
   border-left: 1px solid black;
   border-bottom:1px solid black;
   background-color:#FCF8E8;
 }
-.div2{
-
+.jugador{
+  width: 160px;
+  overflow: hidden;
 }
 body{
-  margin:auto;
+
   animation-name: fondo;
   animation-duration: 1000s;
   animation-iteration-count: infinite;
@@ -40,12 +52,20 @@ body{
   border-bottom:1px solid black;
   background-color:#FCF8E8;
   color:#FCF8E8;
+
 }
 tr:nth-child(even) .divInv2{
   color:#9CB4CC;
+
 }
 tr:nth-child(odd) .divInv2{
   color:#DCD7C9;
+
+}
+
+td>div{
+  height:30px;
+  font-size: 20px;
 }
 
 .div3{
@@ -53,6 +73,7 @@ tr:nth-child(odd) .divInv2{
   border-right: 1px solid black;
   border-bottom:1px solid black;
   background-color:#FCF8E8;
+  height:30px;
 }
 
 tr:nth-child(even) {background-color: #9CB4CC;}
@@ -72,7 +93,7 @@ tr:nth-child(odd) {background-color: #DCD7C9;}
     padding-top:0px;
     padding-right:2%;
 }
-/*----------------------Interfaz Principal---------------------------*/
+/*----------------------Interfaz Principal------------------------display:inline;---*/
 .titulo{
     margin:auto;
     width:80%;
@@ -154,7 +175,7 @@ h1{
 }
 /* Administrador */
 body{
-  margin:0px;
+  /*margin:0px;*/
 }
 #mainAdmin {
   border:  border-left: 1px solid #100F0F;

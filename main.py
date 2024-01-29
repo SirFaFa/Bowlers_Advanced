@@ -10,6 +10,9 @@ from functools import wraps
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from forms import LoginForm, RegisterForm, CreatePartidaForm
 
+import json
+
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 
@@ -90,37 +93,41 @@ def actualizaPartida(pista, valor):
 @login_required
 def risas(id, lista_de_birlas):
     redirect_url = url_for("pistas", pista=id)
-    return render_template("jajas.html", redirect_url=redirect_url, data=lista_de_birlas)
+    return render_template("jajas.html", redirect_url=redirect_url, data=json.loads(lista_de_birlas))
 
 
 #Asignar valores / Conexión con ESP32
 @app.route('/esp32/<int:pista>', methods=["POST"])
 def asignaValor(pista):
-    partida = arrayPista[pista]
-    dataPartida = request.get_json()
-    data = dataPartida
-    if int(data['tirada']) == partida.tirada:
-        if dataPartida["api_key"]=='8BYkEfBA6O6donzWlSihBXox7C0sKR6b':
-            sum = 0
-            lista_birla=[]
-            for subdata in data:
-                if 'birla' in subdata:
-                    sum += int(data[subdata])
-                    lista_birla.append(int(data[subdata]))
-            if sum == 10:
-                if data['tirada'] == '0':
-                    partida.actualizaMarcador('X')
-                    partida.actualizaMarcador(' ')
+    try:
+        partida = arrayPista[pista]
+        dataPartida = request.get_json()
+        data = dataPartida
+        if int(data['tirada']) == partida.tirada:
+            if dataPartida["api_key"]=='8BYkEfBA6O6donzWlSihBXox7C0sKR6b':
+                sum = 0
+                lista_birla=[]
+                for subdata in data:
+                    if 'birla' in subdata:
+                        sum += int(data[subdata])
+                        lista_birla.append(int(data[subdata]))
+                if sum == 10:
+                    if data['tirada'] == '0':
+                        partida.actualizaMarcador('X')
+                        partida.actualizaMarcador(' ')
+                    else:
+                        partida.actualizaMarcador('/')
+                        partida.cambiaTirada()
                 else:
-                    partida.actualizaMarcador('/')
+                    partida.actualizaMarcador(sum)
                     partida.cambiaTirada()
-            else:
-                partida.actualizaMarcador(sum)
-                partida.cambiaTirada()
-            partida.calculaSuma()
-            socketio.emit('nueva-tirada', (lista_birla, pista))
-        return "Todo OK"
-    return "No es la tirada"
+                partida.calculaSuma()
+                socketio.emit('nueva-tirada', (lista_birla, pista))
+            return "Todo OK"
+        return "No es la tirada"
+    except Exception as error:
+        print(error)
+        return "Error"
 
 @socketio.on('partida-finalizada')
 def handle_json(data):
@@ -220,4 +227,4 @@ def admin():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
